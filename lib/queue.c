@@ -6,27 +6,71 @@
   may need to define additional functions if you want to implement the
   extra-point functionality.
  */
-// TODO: inicializes a queue
-void queue_init(node_t * queue)
+
+void queue_init(queue_t * queue)
 {
+  queue = malloc(sizeof(queue));
+  queue->front = NULL;
+  queue->back = NULL;
 }
 
-// TODO: returns the first element of the queue
-node_t *dequeue(node_t * queue)
+node_t *dequeue(queue_t * queue)
 {
-	return NULL;
+  node_t *node = NULL;
+  if (is_empty(queue) == 0)
+  {
+    node = queue->front;
+    queue->front = queue->front->next;
+  }
+
+	return node;
 }
 
-// TODO: inserts a node in a queue
-void enqueue(node_t * queue, node_t * item)
+void enqueue(queue_t * queue, node_t * item)
 {
+  if (is_empty(queue))
+  {
+    queue->front = queue->back = item;
+  }
+  else
+  {
+    queue->back->next = item;
+    queue->back = item;
+  }
 }
 
-// TODO: checks if a queue is empty
-int is_empty(node_t *queue)
+int is_empty(queue_t *queue)
 {
+  if (queue->front == NULL)
+    return 1;
+  
 	return 0;
 }
 
+node_t *peek(queue_t *queue)
+{
+  return queue->front;
+}
 
-
+void enqueue_sort(queue_t *q, node_t *item, node_lte comp)
+{
+  node_t *front = item; // item turns front
+  node_t *aux;
+  if (is_empty(q))
+  {
+    q->back = q->front = item;
+  }
+  else
+  {
+    item->next = q->front;
+    // continues if item > item->next and has next
+    while (comp(item, item->next) == 0 || item->next != NULL)
+    {
+      front = q->front; // "restore" front
+      aux = item->next;
+      item->next = item->next->next;
+      aux->next = item;
+    }
+    q->front = front;
+  }
+}
