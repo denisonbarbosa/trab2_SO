@@ -4,9 +4,10 @@
 #include <stddef.h>
 #include <thread.h>
 
-typedef struct node {
-   tcb_t *content;
-   node_t *next;
+typedef struct node
+{
+    tcb_t *content;
+    node_t *next;
 } node_t;
 
 typedef struct queue{
@@ -50,4 +51,4 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  */
 void enqueue_sort(queue_t *q, node_t *item, node_lte comp);
 
-#endif                          /* QUEUE_H */
+#endif /* QUEUE_H */
