@@ -2,9 +2,17 @@
 #define QUEUE_H
 
 #include <stddef.h>
+#include <thread.h>
 
 typedef struct node {
+   tcb_t *content;
+   node_t *next;
 } node_t;
+
+typedef struct queue{
+   node_t *first;
+   node_t *last;
+} queue_t;
 
 /* Initialize a queue */
 void queue_init(node_t * queue);

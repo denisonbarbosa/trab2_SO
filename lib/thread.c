@@ -18,7 +18,7 @@ int tid_global = 0;
  */
 int thread_init() 
 {
-	// criar TCB para main
+	//criar TCB para main
 	//criar uma ready queue
 	//inicializar a variável global current_running
 	return 0;
@@ -28,6 +28,16 @@ int thread_init()
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
 	// criar um TCB e alocar região de memória para a pilha do TCB
+	tcb_t *tcb = malloc(sizeof(tcb_t));
+	
+	tcb->stack = malloc(sizeof(stack_t));
+	tcb->stack->top = NULL;
+	tcb->stack->max_size = STACK_SIZE;
+	tcb->stack->current_size = 0;
+	
+	tcb->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
+	
+	thread->tcb = tcb;
 	// e fazer com que este campo da estrutura TCP aponte para a pilha
 	// Depois coloca no final da ready queue
 	return 0;
