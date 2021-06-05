@@ -37,6 +37,8 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 	
 	tcb->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
 	
+	tcb->current_exec_time = 0;
+	
 	thread->tcb = tcb;
 	// e fazer com que este campo da estrutura TCP aponte para a pilha
 	// Depois coloca no final da ready queue

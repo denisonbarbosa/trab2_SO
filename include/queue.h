@@ -4,25 +4,27 @@
 #include <stddef.h>
 #include <thread.h>
 
-typedef struct node {
-   tcb_t *content;
-   node_t *next;
+typedef struct node
+{
+    tcb_t *content;
+    node_t *next;
 } node_t;
 
-typedef struct queue{
-   node_t *first;
-   node_t *last;
+typedef struct queue
+{
+    node_t *first;
+    node_t *last;
 } queue_t;
 
 /* Initialize a queue */
-void queue_init(node_t * queue);
+void queue_init(node_t *queue);
 
 /* Remove and return the item at the front of the queue Return NULL if the
    queue is empty */
-node_t *dequeue(node_t * queue);
+node_t *dequeue(node_t *queue);
 
 /* Add item to the back of the queue */
-void enqueue(node_t * queue, node_t * item);
+void enqueue(node_t *queue, node_t *item);
 
 /* Determine if the queue is empty.
  * Returns 1 if the queue is empty.
@@ -50,4 +52,4 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  */
 void enqueue_sort(node_t *q, node_t *item, node_lte comp);
 
-#endif                          /* QUEUE_H */
+#endif /* QUEUE_H */
