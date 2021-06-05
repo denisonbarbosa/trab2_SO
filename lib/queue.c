@@ -64,7 +64,7 @@ void enqueue_sort(queue_t *q, node_t *item, node_lte comp)
     {
         item->next = q->front;
         // continues if item > item->next and has next
-        while (comp(item, item->next) == 0 || item->next != NULL)
+        while (comp(item, item->next) == 0 && item->next != NULL)
         {
             front = q->front; // "restore" front
             aux = item->next;
