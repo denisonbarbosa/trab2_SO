@@ -6,7 +6,7 @@ enum
     SPIN = TRUE,
 };
 
-// TODO: inicializes a lock
+// TODO: lock_init()
 void lock_init(lock_t *l)
 {
     if (SPIN)
@@ -18,8 +18,7 @@ void lock_init(lock_t *l)
     }
 }
 
-// TODO:  acquires a  lock if  it is  available or  blocks the  thread
-// otherwise
+// TODO: lock_acquire()
 void lock_acquire(lock_t *l)
 {
     if (SPIN)
@@ -33,8 +32,7 @@ void lock_acquire(lock_t *l)
     }
 }
 
-// TODO:  releases a  lock  and  unlocks one  thread  from the  lock's
-// blocking list
+// TODO: lock_release()
 void lock_release(lock_t *l)
 {
     if (SPIN)

@@ -15,30 +15,49 @@ typedef struct queue{
    node_t *back;
 } queue_t;
 
-/* Initialize a queue */
+/**
+ * @brief Initializes a queue pointer
+ * 
+ * @param queue Pointer to be initialized
+ */
 void queue_init(queue_t * queue);
 
-/* Remove and return the item at the front of the queue Return NULL if the
-   queue is empty */
+/**
+ * @brief Remove and return the item at the front of the queue
+ * 
+ * @param queue 
+ * @return node_t* that was removed || NULL if queue is empty
+ */
 node_t *dequeue(queue_t * queue);
 
-/* Add item to the back of the queue */
+/**
+ * @brief Add item to the back of the queue
+ * 
+ * @param queue 
+ * @param item 
+ */
 void enqueue(queue_t * queue, node_t * item);
 
-/* Determine if the queue is empty.
- * Returns 1 if the queue is empty.
- * Returns 0 otherwise.
+/**
+ * @brief Determine if the queue is empty.
+ * 
+ * @param queue 
+ * @return int: 1 if is empty || 0 otherwise.
  */
 int is_empty(queue_t *queue);
 
-/* Returns the first item in the queue
- * Returns NULL if the queue is empty
+/**
+ * @brief Returns the first item in the queue
+ * 
+ * @param queue 
+ * @return node_t* of the item || NULL if queue is empty
  */
 node_t *peek(queue_t *queue);
 
-/* A comparison function should return:
- *  1 if a is less-than-or-equal-to b;
- *  0 otherwise.
+/**
+ * @brief A comparison function
+ * 
+ * @return int 1 if a is less-than-or-equal-to b || 0 otherwise.
  */
 typedef int (*node_lte)(node_t *a, node_t *b);
 
@@ -48,6 +67,14 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  * If /q/ was sorted (w.r.t. /comp/) before the
  * call, then /q/ is sorted after the call.
  * This is the simple linear-time algorithm.
+ */
+
+/**
+ * @brief Insert item into the queue with less-or-equal-to inequality
+ * 
+ * @param q Queue to receive the item
+ * @param item Item to be inserted
+ * @param comp Comparison function
  */
 void enqueue_sort(queue_t *q, node_t *item, node_lte comp);
 

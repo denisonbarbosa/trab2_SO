@@ -5,32 +5,30 @@
 #include <queue.h>
 #include <thread.h>
 
-node_t ready_queue;
+queue_t ready_queue;
 tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
 
 int tid_global = 0;
 
-/*
-  TODO:  thread_init: initializes  the  thread library  and creates  a
-  thread for  the main function. Returns  0 on success, or  -EINVAL if
-  the library has already been initialized.
- */
 int thread_init()
 {
+    if (&ready_queue != NULL)
+        return -EINVAL;
+
     tcb_t *main_tcb = malloc(sizeof(tcb_t));
-    //criar uma ready queue
+    init_tcb(main_tcb);
+
+    queue_init(&ready_queue);
 
     current_running = main_tcb;
 
     return 0;
 }
 
-// TODO: creates a new thread and inserts in the ready queue.
-int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
+// TODO: init_tcb() -> check stack logic
+void init_tcb(tcb_t *tcb)
 {
-    // criar um TCB e alocar região de memória para a pilha do TCB
-    tcb_t *tcb = malloc(sizeof(tcb_t));
-
+    tcb = malloc(sizeof(tcb_t));
     tcb->stack = malloc(sizeof(stack_t));
     tcb->stack->top = NULL;
     tcb->stack->max_size = STACK_SIZE;
@@ -39,21 +37,31 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
     tcb->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
 
     tcb->current_exec_time = 0;
+}
+
+// TODO: thread_create() -> check stack routine pilling
+int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
+{
+    tcb_t *tcb;
+    init_tcb(tcb);
 
     thread->tcb = tcb;
-    // e fazer com que este campo da estrutura TCP aponte para a pilha
-    // Depois coloca no final da ready queue
+
+    node_t *new_node = malloc(sizeof(node_t));
+    new_node->content = tcb;
+    enqueue(&ready_queue, new_node);
+
     return 0;
 }
 
-// TODO: yields the CPU to another thread
+// TODO: thread_yield()
 int thread_yield()
 {
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
 }
 
-// TODO: waits for a thread to finish
+// TODO: thread_join()
 int thread_join(thread_t *thread, int *retval)
 {
     //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
@@ -62,21 +70,28 @@ int thread_join(thread_t *thread, int *retval)
     return 0;
 }
 
-// TODO: marks a thread as EXITED and terminates the thread
+// TODO: thread_exit()
 void thread_exit(int status)
 {
     // marcar a thread como terminada
 }
 
-// TODO: selects the next thread to execute
+// TODO: scheduler()
+/**
+ * @brief Selects the next thread to execute 
+ * 
+ */
 void scheduler()
 {
     //seleciona a próxima thread que irá executar
     //(pega a primeira thread que está na fila e fazer que current_running aponte para essa thread)
 }
 
-// TODO: you must  make sure this function is called  if a thread does
-// not call thread_exit
+// TODO: exit_handler()
+/**
+ * @brief This function must be called if a thread does not call thread_exit()
+ * 
+ */
 void exit_handler()
 {
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)

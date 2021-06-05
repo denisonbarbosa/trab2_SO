@@ -20,9 +20,8 @@ typedef enum
 
 typedef struct tcb
 {
-    // TODO: define the fields for you TCB
     status_t status;
-    uint64_t *regs; //espaço para registradores da CPU: rax, rbx, rcx, rdx, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15, rsp (ponteiro para pilha)
+    uint64_t *regs;
     uint64_t rflags;
     stack_t *stack;
     int tid;
@@ -41,5 +40,12 @@ typedef struct stack_element
     void *command;
     stack_element_t *next;
 } stack_element_t;
+
+/**
+ * @brief Initializes the tcb and allocates necessary memory
+ * 
+ * @param tcb Pointer to a tcb_t
+ */
+void init_tcb(tcb_t *tcb);
 
 #endif /* THREAD_H */
