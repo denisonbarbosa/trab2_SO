@@ -15,6 +15,9 @@ void lock_init(lock_t *l)
     }
     else
     {
+        l = malloc(sizeof(lock_t));
+        l->status = UNLOCKED;
+        queue_init(&l->thread_queue);
     }
 }
 
@@ -29,6 +32,12 @@ void lock_acquire(lock_t *l)
     }
     else
     {
+        while (l->status == LOCKED)
+        {
+            enqueue(&l->thread_queue, getcurrt());
+            block();
+        }
+        l->status = LOCKED;
     }
 }
 
@@ -41,15 +50,26 @@ void lock_release(lock_t *l)
     }
     else
     {
+        l->status = UNLOCKED;
+        unblock(l);
     }
 }
 
 // TODO: blocks the running thread
 void block()
 {
+    getcurrt()->status = BLOCKED;
+    scheduler_entry();
 }
 
 // TODO: unblocks  a thread that is waiting on a lock.
 void unblock(lock_t *l)
 {
+    node_t *tmp = dequeue(&l->thread_queue);
+
+    if (!is_null(tmp))
+    {
+        tmp->content->status = READY;
+        enqueue(getreadyqueue(), tmp);
+    }
 }

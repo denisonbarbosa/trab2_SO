@@ -22,7 +22,6 @@ node_t *dequeue(queue_t *queue)
         node = queue->front;
         queue->front = queue->front->next;
     }
-
     return node;
 }
 

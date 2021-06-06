@@ -57,6 +57,12 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 // TODO: thread_yield()
 int thread_yield()
 {
+    //a thread que chamou vai pro final da fila
+    //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
+    
+    //escalonador -> pega a fila de thread prontas(ready queue)
+    //pega a primeira thread que está na fila e faz current running apontar para esta thread
+    scheduler_entry();
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
 }
@@ -101,4 +107,14 @@ void exit_handler()
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)
     //o primeiro registrador para passar parâmetro é o rdi
     //quando start_routine for invocada, precisamos passar o argumento da thread_create para o rdi
+}
+
+tcb_t* getcurrt()
+{
+    return current_running;
+}
+
+queue_t* getreadyqueue()
+{
+    return &ready_queue;
 }
