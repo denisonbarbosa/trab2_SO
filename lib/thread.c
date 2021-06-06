@@ -57,6 +57,12 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 // TODO: thread_yield()
 int thread_yield()
 {
+    //a thread que chamou vai pro final da fila
+    //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
+    
+    //escalonador -> pega a fila de thread prontas(ready queue)
+    //pega a primeira thread que está na fila e faz current running apontar para esta thread
+    scheduler_entry();
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
 }
@@ -64,6 +70,10 @@ int thread_yield()
 // TODO: thread_join()
 int thread_join(thread_t *thread, int *retval)
 {
+    if(thread->tcb == EXITED) 
+    {
+
+    }
     //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
     //Se não for, tem que esperar a thread terminar, fazedo um yield da thread que chamou a thread join
     //desaloca memória
