@@ -33,4 +33,16 @@ void lock_acquire(lock_t *);
  */
 void lock_release(lock_t *);
 
+/**
+ * @brief Blocks the current thread from joining the ready queue
+ * 
+ */
+void block();
+
+/**
+ * @brief Removes a thread from the lock wait queue and add it to the ready queue
+ * 
+ */
+void unblock(lock_t *);
+
 #endif /* LOCK_H */
