@@ -49,6 +49,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 
     node_t *new_node = malloc(sizeof(node_t));
     new_node->content = tcb;
+    
     enqueue(&ready_queue, new_node);
 
     return 0;
@@ -108,6 +109,22 @@ void exit_handler()
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)
     //o primeiro registrador para passar parâmetro é o rdi
     //quando start_routine for invocada, precisamos passar o argumento da thread_create para o rdi
+}
+
+stack_element_t* pop_stack(stack_t* stack)
+{
+    stack_element_t *tmp = stack->top;
+    stack->top = stack->top->next;
+    stack->current_size--;
+    
+    return tmp;
+}
+
+void push_stack(stack_t* stack, stack_element_t *element)
+{
+    element->next = stack->top;
+    stack->top = element;
+    stack->current_size++;
 }
 
 tcb_t* getcurrt()
