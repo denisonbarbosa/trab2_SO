@@ -64,6 +64,10 @@ int thread_yield()
 // TODO: thread_join()
 int thread_join(thread_t *thread, int *retval)
 {
+    while (thread->tcb->status != EXITED)
+        thread_yield();
+    
+    retval = thread->tcb->retval;
     //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
     //Se não for, tem que esperar a thread terminar, fazedo um yield da thread que chamou a thread join
     //desaloca memória
