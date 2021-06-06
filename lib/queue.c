@@ -25,16 +25,19 @@ node_t *dequeue(queue_t *queue)
     return node;
 }
 
-void enqueue(queue_t *queue, node_t *item)
+void enqueue(queue_t *queue, tcb_t *tcb)
 {
+    node_t *tmp = malloc(sizeof(node_t));
+    tmp->next = NULL;
+    tmp->content = tcb;
     if (is_empty(queue))
     {
-        queue->front = queue->back = item;
+        queue->front = queue->back = tmp;
     }
     else
     {
-        queue->back->next = item;
-        queue->back = item;
+        queue->back->next = tmp;
+        queue->back = tmp;
     }
 }
 

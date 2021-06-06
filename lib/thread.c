@@ -47,9 +47,12 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 
     thread->tcb = tcb;
 
+    push_stack(tcb->stack, arg);
+    push_stack(tcb->stack, start_routine);
+    
     node_t *new_node = malloc(sizeof(node_t));
     new_node->content = tcb;
-    
+
     enqueue(&ready_queue, new_node);
 
     return 0;
@@ -59,8 +62,8 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 int thread_yield()
 {
     //a thread que chamou vai pro final da fila
+    enqueue(&ready_queue, current_running);
     //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
-    
     //escalonador -> pega a fila de thread prontas(ready queue)
     //pega a primeira thread que está na fila e faz current running apontar para esta thread
     scheduler_entry();
@@ -119,10 +122,12 @@ stack_element_t* pop_stack(stack_t* stack)
     return tmp;
 }
 
-void push_stack(stack_t* stack, stack_element_t *element)
+void push_stack(stack_t* stack, void* element)
 {
-    element->next = stack->top;
-    stack->top = element;
+    stack_element_t *tmp = malloc(sizeof(stack_element_t));
+    tmp->command = element;
+    tmp->next = stack->top;
+    stack->top = tmp;
     stack->current_size++;
 }
 

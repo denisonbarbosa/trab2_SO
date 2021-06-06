@@ -7,9 +7,6 @@
 #define NUMBER_OF_REGISTERS 15
 #define STACK_SIZE 2048
 
-void scheduler_entry();
-void exit_handler();
-
 typedef enum
 {
     FIRST_TIME,
@@ -63,7 +60,7 @@ stack_element_t* pop_stack(stack_t *stack);
  * @param stack 
  * @param element 
  */
-void push_stack(stack_t *stack, stack_element_t *element);
+void push_stack(stack_t *stack, void *element);
 
 /**
  * @brief Returns the pointer to the current running thread
@@ -78,4 +75,8 @@ tcb_t* getcurrt();
  * @return queue_t*
  */
 queue_t* getreadyqueue();
+
+void scheduler_entry();
+void exit_handler();
+
 #endif /* THREAD_H */

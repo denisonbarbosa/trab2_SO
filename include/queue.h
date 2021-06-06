@@ -36,7 +36,7 @@ node_t *dequeue(queue_t * queue);
  * @param queue 
  * @param item 
  */
-void enqueue(queue_t * queue, node_t * item);
+void enqueue(queue_t * queue, tcb_t* tcb);
 
 /**
  * @brief Determine if the queue is empty.
