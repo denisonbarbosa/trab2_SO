@@ -26,6 +26,7 @@ typedef struct tcb
     stack_t *stack;
     int tid;
     int current_exec_time;
+    int retval;
 } tcb_t;
 
 typedef struct stack
@@ -48,4 +49,33 @@ typedef struct stack_element
  */
 void init_tcb(tcb_t *tcb);
 
+/**
+ * @brief Removes and returns the top of the stack
+ * 
+ * @param stack 
+ * @return stack_element_t* 
+ */
+stack_element_t* pop_stack(stack_t *stack);
+
+/**
+ * @brief Adds the specified element to the top of the stack
+ * 
+ * @param stack 
+ * @param element 
+ */
+void push_stack(stack_t *stack, stack_element_t *element);
+
+/**
+ * @brief Returns the pointer to the current running thread
+ * 
+ * @return tcb_t* 
+ */
+tcb_t* getcurrt();
+
+/**
+ * @brief Returns the pointer to the ready queue
+ * 
+ * @return queue_t*
+ */
+queue_t* getreadyqueue();
 #endif /* THREAD_H */

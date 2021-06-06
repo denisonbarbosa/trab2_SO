@@ -72,6 +72,7 @@ int thread_join(thread_t *thread, int *retval)
 {
     if(thread->tcb == EXITED) 
     {
+        thread->tcb;
 
     }
     //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
@@ -107,4 +108,14 @@ void exit_handler()
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)
     //o primeiro registrador para passar parâmetro é o rdi
     //quando start_routine for invocada, precisamos passar o argumento da thread_create para o rdi
+}
+
+tcb_t* getcurrt()
+{
+    return current_running;
+}
+
+queue_t* getreadyqueue()
+{
+    return &ready_queue;
 }
