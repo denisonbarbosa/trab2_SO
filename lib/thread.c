@@ -26,23 +26,22 @@ int thread_init()
     return 0;
 }
 
-// TODO: init_tcb() -> check stack logic
+// TODO: init_tcb()
 void init_tcb(tcb_t *tcb)
 {
-    tcb = malloc(sizeof(tcb_t));
+    tcb = (tcb_t*)malloc(sizeof(tcb_t));
     tcb->stack = malloc(STACK_SIZE);
     tcb->current_exec_time = 0;
 }
 
-// TODO: thread_create() -> check stack routine pilling
+// TODO: thread_create()
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
-    init_tcb(thread->tcb);
+    init_tcb(((tcb_t*)thread->tcb));
 
-    // push_stack(tcb->stack, arg);
-    // push_stack(tcb->stack, start_routine);
+    ((tcb_t*)thread->tcb)->stack = start_routine(arg);
     
-    node_t *new_node = malloc(sizeof(node_t));
+    node_t *new_node = (node_t*)malloc(sizeof(node_t));
     new_node->content = thread->tcb;
 
     enqueue(&ready_queue, thread->tcb);
@@ -53,11 +52,10 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 // TODO: thread_yield()
 int thread_yield()
 {
-    //a thread que chamou vai pro final da fila
-    enqueue(&ready_queue, current_running);
+    enqueue(ready_queue, current_running);
+    //pega a primeira thread que está na fila e faz current running apontar para esta thread
     //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
     //escalonador -> pega a fila de thread prontas(ready queue)
-    //pega a primeira thread que está na fila e faz current running apontar para esta thread
     scheduler_entry();
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
@@ -89,8 +87,7 @@ void thread_exit(int status)
  */
 void scheduler()
 {
-    //seleciona a próxima thread que irá executar
-    //(pega a primeira thread que está na fila e fazer que current_running aponte para essa thread)
+    current_running = dequeue(ready_queue);
 }
 
 // TODO: exit_handler()

@@ -17,8 +17,8 @@ typedef enum
 
 typedef struct tcb
 {
-    status_t status;
     uint64_t regs[NUMBER_OF_REGISTERS];
+    status_t status;
     uint64_t rflags;
     void *stack;
     int tid;
