@@ -5,20 +5,20 @@
 #include <queue.h>
 #include <thread.h>
 
-queue_t ready_queue;
+queue_t *ready_queue;
 tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
 
 int tid_global = 0;
 
 int thread_init()
 {
-    if (&ready_queue != NULL)
+    if (ready_queue != NULL)
         return -EINVAL;
 
     tcb_t *main_tcb = malloc(sizeof(tcb_t));
     init_tcb(main_tcb);
 
-    queue_init(&ready_queue);
+    queue_init(ready_queue);
 
     current_running = main_tcb;
 
@@ -29,31 +29,22 @@ int thread_init()
 void init_tcb(tcb_t *tcb)
 {
     tcb = malloc(sizeof(tcb_t));
-    tcb->stack = malloc(sizeof(stack_t));
-    tcb->stack->top = NULL;
-    tcb->stack->max_size = STACK_SIZE;
-    tcb->stack->current_size = 0;
-
-    tcb->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
-
+    tcb->stack = malloc(STACK_SIZE);
     tcb->current_exec_time = 0;
 }
 
 // TODO: thread_create() -> check stack routine pilling
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
-    tcb_t *tcb;
-    init_tcb(tcb);
+    init_tcb(thread->tcb);
 
-    thread->tcb = tcb;
-
-    push_stack(tcb->stack, arg);
-    push_stack(tcb->stack, start_routine);
+    // push_stack(tcb->stack, arg);
+    // push_stack(tcb->stack, start_routine);
     
     node_t *new_node = malloc(sizeof(node_t));
-    new_node->content = tcb;
+    new_node->content = thread->tcb;
 
-    enqueue(&ready_queue, new_node);
+    enqueue(&ready_queue, thread->tcb);
 
     return 0;
 }
@@ -74,10 +65,10 @@ int thread_yield()
 // TODO: thread_join()
 int thread_join(thread_t *thread, int *retval)
 {
-    while (thread->tcb->status != EXITED)
+    while (((tcb_t *)thread->tcb)->status != EXITED)
         thread_yield();
     
-    retval = thread->tcb->retval;
+    *retval = ((tcb_t *)thread->tcb)->retval;
     //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
     //Se não for, tem que esperar a thread terminar, fazedo um yield da thread que chamou a thread join
     //desaloca memória
@@ -113,30 +104,12 @@ void exit_handler()
     //quando start_routine for invocada, precisamos passar o argumento da thread_create para o rdi
 }
 
-stack_element_t* pop_stack(stack_t* stack)
-{
-    stack_element_t *tmp = stack->top;
-    stack->top = stack->top->next;
-    stack->current_size--;
-    
-    return tmp;
-}
-
-void push_stack(stack_t* stack, void* element)
-{
-    stack_element_t *tmp = malloc(sizeof(stack_element_t));
-    tmp->command = element;
-    tmp->next = stack->top;
-    stack->top = tmp;
-    stack->current_size++;
-}
-
 tcb_t* getcurrt()
 {
     return current_running;
 }
 
-queue_t* getreadyqueue()
+void* getreadyqueue()
 {
     return &ready_queue;
 }

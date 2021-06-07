@@ -14,6 +14,6 @@ scratch: .quad	0
 	# popq (reg ou mem) 
 	# leaq 
 scheduler_entry: # rsp aponta para a pilha da thread que está executando
-	
+	pushq %rdi
 	ret
 

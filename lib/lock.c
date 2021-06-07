@@ -1,5 +1,6 @@
 #include <lock.h>
 #include <threadu.h>
+#include <stdlib.h>
 
 enum
 {
@@ -67,9 +68,9 @@ void unblock(lock_t *l)
 {
     node_t *tmp = dequeue(&l->thread_queue);
 
-    if (!is_null(tmp))
+    if (tmp != NULL)
     {
         tmp->content->status = READY;
-        enqueue(getreadyqueue(), tmp);
+        enqueue(getreadyqueue(), tmp->content);
     }
 }

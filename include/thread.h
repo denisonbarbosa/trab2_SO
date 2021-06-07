@@ -18,26 +18,13 @@ typedef enum
 typedef struct tcb
 {
     status_t status;
-    uint64_t *regs;
+    uint64_t regs[NUMBER_OF_REGISTERS];
     uint64_t rflags;
-    stack_t *stack;
+    void *stack;
     int tid;
     int current_exec_time;
     int retval;
 } tcb_t;
-
-typedef struct stack
-{
-    stack_element_t *top;
-    int max_size;
-    int current_size;
-} stack_t;
-
-typedef struct stack_element
-{
-    void *command;
-    stack_element_t *next;
-} stack_element_t;
 
 /**
  * @brief Initializes the tcb and allocates necessary memory
@@ -45,22 +32,6 @@ typedef struct stack_element
  * @param tcb Pointer to a tcb_t
  */
 void init_tcb(tcb_t *tcb);
-
-/**
- * @brief Removes and returns the top of the stack
- * 
- * @param stack 
- * @return stack_element_t* 
- */
-stack_element_t* pop_stack(stack_t *stack);
-
-/**
- * @brief Adds the specified element to the top of the stack
- * 
- * @param stack 
- * @param element 
- */
-void push_stack(stack_t *stack, void *element);
 
 /**
  * @brief Returns the pointer to the current running thread
@@ -74,7 +45,7 @@ tcb_t* getcurrt();
  * 
  * @return queue_t*
  */
-queue_t* getreadyqueue();
+void* getreadyqueue();
 
 void scheduler_entry();
 void exit_handler();
