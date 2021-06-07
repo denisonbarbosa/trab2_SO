@@ -26,15 +26,14 @@ int thread_init()
     return 0;
 }
 
-// TODO: init_tcb()
 void init_tcb(tcb_t *tcb)
 {
     tcb = (tcb_t*)malloc(sizeof(tcb_t));
+    tcb->tid = tid_global++;
     tcb->stack = malloc(STACK_SIZE);
     tcb->current_exec_time = 0;
 }
 
-// TODO: thread_create()
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
     init_tcb(((tcb_t*)thread->tcb));
@@ -77,24 +76,17 @@ int thread_join(thread_t *thread, int *retval)
 // TODO: thread_exit()
 void thread_exit(int status)
 {
-    // marcar a thread como terminada
+    current_running->status = EXITED;
+    scheduler_entry();
 }
 
 // TODO: scheduler()
-/**
- * @brief Selects the next thread to execute 
- * 
- */
 void scheduler()
 {
     current_running = dequeue(ready_queue);
 }
 
 // TODO: exit_handler()
-/**
- * @brief This function must be called if a thread does not call thread_exit()
- * 
- */
 void exit_handler()
 {
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)
@@ -109,5 +101,5 @@ tcb_t* getcurrt()
 
 void* getreadyqueue()
 {
-    return &ready_queue;
+    return ready_queue;
 }
