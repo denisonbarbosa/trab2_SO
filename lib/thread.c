@@ -43,7 +43,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
     node_t *new_node = (node_t*)malloc(sizeof(node_t));
     new_node->content = thread->tcb;
 
-    enqueue(&ready_queue, thread->tcb);
+    enqueue(ready_queue, thread->tcb);
 
     return 0;
 }
@@ -83,7 +83,7 @@ void thread_exit(int status)
 // TODO: scheduler()
 void scheduler()
 {
-    current_running = dequeue(ready_queue);
+    current_running = dequeue(ready_queue)->content;
 }
 
 // TODO: exit_handler()
