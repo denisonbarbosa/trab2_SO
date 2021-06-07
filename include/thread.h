@@ -17,8 +17,8 @@ typedef enum
 
 typedef struct tcb
 {
-    status_t status;
     uint64_t regs[NUMBER_OF_REGISTERS];
+    status_t status;
     uint64_t rflags;
     void *stack;
     int tid;
@@ -47,7 +47,16 @@ tcb_t* getcurrt();
  */
 void* getreadyqueue();
 
+/**
+ * @brief Selects the next thread to execute 
+ * 
+ */
 void scheduler_entry();
+
+/**
+ * @brief This function must be called if a thread does not call thread_exit()
+ * 
+ */
 void exit_handler();
 
 #endif /* THREAD_H */

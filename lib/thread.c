@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <queue.h>
 #include <thread.h>
+#include <threadu.h>
 
 queue_t *ready_queue;
 tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
@@ -15,7 +16,7 @@ int thread_init()
     if (ready_queue != NULL)
         return -EINVAL;
 
-    tcb_t *main_tcb = malloc(sizeof(tcb_t));
+    tcb_t *main_tcb = (tcb_t*)malloc(sizeof(tcb_t));
     init_tcb(main_tcb);
 
     queue_init(ready_queue);
@@ -25,23 +26,21 @@ int thread_init()
     return 0;
 }
 
-// TODO: init_tcb() -> check stack logic
 void init_tcb(tcb_t *tcb)
 {
-    tcb = malloc(sizeof(tcb_t));
+    tcb = (tcb_t*)malloc(sizeof(tcb_t));
+    tcb->tid = tid_global++;
     tcb->stack = malloc(STACK_SIZE);
     tcb->current_exec_time = 0;
 }
 
-// TODO: thread_create() -> check stack routine pilling
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
-    init_tcb(thread->tcb);
+    init_tcb(((tcb_t*)thread->tcb));
 
-    // push_stack(tcb->stack, arg);
-    // push_stack(tcb->stack, start_routine);
+    ((tcb_t*)thread->tcb)->stack = start_routine(arg);
     
-    node_t *new_node = malloc(sizeof(node_t));
+    node_t *new_node = (node_t*)malloc(sizeof(node_t));
     new_node->content = thread->tcb;
 
     enqueue(ready_queue, thread->tcb);
@@ -52,11 +51,10 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 // TODO: thread_yield()
 int thread_yield()
 {
-    //a thread que chamou vai pro final da fila
     enqueue(ready_queue, current_running);
+    //pega a primeira thread que está na fila e faz current running apontar para esta thread
     //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
     //escalonador -> pega a fila de thread prontas(ready queue)
-    //pega a primeira thread que está na fila e faz current running apontar para esta thread
     scheduler_entry();
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
@@ -78,25 +76,17 @@ int thread_join(thread_t *thread, int *retval)
 // TODO: thread_exit()
 void thread_exit(int status)
 {
-    // marcar a thread como terminada
+    current_running->status = EXITED;
+    scheduler_entry();
 }
 
 // TODO: scheduler()
-/**
- * @brief Selects the next thread to execute 
- * 
- */
 void scheduler()
 {
-    //seleciona a próxima thread que irá executar
-    //(pega a primeira thread que está na fila e fazer que current_running aponte para essa thread)
+    current_running = dequeue(ready_queue)->content;
 }
 
 // TODO: exit_handler()
-/**
- * @brief This function must be called if a thread does not call thread_exit()
- * 
- */
 void exit_handler()
 {
     //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)

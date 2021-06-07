@@ -10,7 +10,7 @@
 
 void queue_init(queue_t *queue)
 {
-    queue = malloc(sizeof(queue));
+    queue = (queue_t *) malloc(sizeof(queue_t));
     queue->front = NULL;
     queue->back = NULL;
 }
@@ -28,7 +28,7 @@ node_t *dequeue(queue_t *queue)
 
 void enqueue(queue_t *queue, tcb_t *tcb)
 {
-    node_t *tmp = malloc(sizeof(node_t));
+    node_t *tmp = (node_t*)malloc(sizeof(node_t));
     tmp->next = NULL;
     tmp->content = tcb;
     if (is_empty(queue))
@@ -46,7 +46,6 @@ int is_empty(queue_t *queue)
 {
     if (queue->front == NULL)
         return 1;
-
     return 0;
 }
 

@@ -16,7 +16,7 @@ void lock_init(lock_t *l)
     }
     else
     {
-        l = malloc(sizeof(lock_t));
+        l = (lock_t*)malloc(sizeof(lock_t));
         l->status = UNLOCKED;
         queue_init(&l->thread_queue);
     }

@@ -34,6 +34,7 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	pushq %r15
 	
 	call scheduler
+	movq current_running, %rsp
 	# restoring context
 	popq %r15
 	popq %r14
