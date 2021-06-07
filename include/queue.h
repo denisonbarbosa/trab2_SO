@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <thread.h>
+#include <thread.h>
 
 typedef struct node
 {

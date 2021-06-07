@@ -4,21 +4,22 @@
 #include <stdint.h>
 #include <queue.h>
 #include <thread.h>
+#include <threadu.h>
 
-queue_t ready_queue;
+queue_t *ready_queue;
 tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
 
 int tid_global = 0;
 
 int thread_init()
 {
-    if (&ready_queue != NULL)
+    if (ready_queue != NULL)
         return -EINVAL;
 
-    tcb_t *main_tcb = malloc(sizeof(tcb_t));
+    tcb_t *main_tcb = (tcb_t*)malloc(sizeof(tcb_t));
     init_tcb(main_tcb);
 
-    queue_init(&ready_queue);
+    queue_init(ready_queue);
 
     current_running = main_tcb;
 
@@ -28,13 +29,13 @@ int thread_init()
 // TODO: init_tcb() -> check stack logic
 void init_tcb(tcb_t *tcb)
 {
-    tcb = malloc(sizeof(tcb_t));
-    tcb->stack = malloc(sizeof(stack_t));
+    tcb = (tcb_t*) malloc(sizeof(tcb_t));
+    tcb->stack = (stack_t*) malloc(sizeof(stack_t));
     tcb->stack->top = NULL;
     tcb->stack->max_size = STACK_SIZE;
     tcb->stack->current_size = 0;
 
-    tcb->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
+    tcb->regs = (uint64_t*) malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
 
     tcb->current_exec_time = 0;
 }
@@ -50,7 +51,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
     push_stack(tcb->stack, arg);
     push_stack(tcb->stack, start_routine);
     
-    node_t *new_node = malloc(sizeof(node_t));
+    node_t *new_node = (node_t*) malloc(sizeof(node_t));
     new_node->content = tcb;
 
     enqueue(&ready_queue, new_node);
@@ -124,7 +125,7 @@ stack_element_t* pop_stack(stack_t* stack)
 
 void push_stack(stack_t* stack, void* element)
 {
-    stack_element_t *tmp = malloc(sizeof(stack_element_t));
+    stack_element_t *tmp = (stack_element_t*) malloc(sizeof(stack_element_t));
     tmp->command = element;
     tmp->next = stack->top;
     stack->top = tmp;
