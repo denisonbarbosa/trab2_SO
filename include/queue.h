@@ -8,7 +8,7 @@
 typedef struct node
 {
     tcb_t *content;
-    node_t *next;
+    struct node *next;
 } node_t;
 
 typedef struct queue{

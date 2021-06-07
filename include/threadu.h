@@ -9,7 +9,7 @@ typedef enum
 
 typedef struct thr
 {
-    tcb_t *tcb;
+    void *tcb;
 } thread_t;
 
 /**

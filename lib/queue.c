@@ -1,4 +1,5 @@
 #include <queue.h>
+#include <stdlib.h>
 
 /*
   This   file    contains   a    function   definitions    for   queue
