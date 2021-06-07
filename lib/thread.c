@@ -44,7 +44,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
     node_t *new_node = malloc(sizeof(node_t));
     new_node->content = thread->tcb;
 
-    enqueue(&ready_queue, thread->tcb);
+    enqueue(ready_queue, thread->tcb);
 
     return 0;
 }
@@ -53,7 +53,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 int thread_yield()
 {
     //a thread que chamou vai pro final da fila
-    enqueue(&ready_queue, current_running);
+    enqueue(ready_queue, current_running);
     //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
     //escalonador -> pega a fila de thread prontas(ready queue)
     //pega a primeira thread que está na fila e faz current running apontar para esta thread
@@ -111,5 +111,5 @@ tcb_t* getcurrt()
 
 void* getreadyqueue()
 {
-    return &ready_queue;
+    return ready_queue;
 }
