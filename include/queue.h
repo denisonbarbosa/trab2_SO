@@ -3,17 +3,17 @@
 
 #include <stddef.h>
 #include <thread.h>
-#include <thread.h>
 
 typedef struct node
 {
-    tcb_t *content;
+    void *content;
     struct node *next;
 } node_t;
 
-typedef struct queue{
-   node_t *front;
-   node_t *back;
+typedef struct queue
+{
+    node_t *front;
+    node_t *back;
 } queue_t;
 
 /**
@@ -21,7 +21,7 @@ typedef struct queue{
  * 
  * @param queue Pointer to be initialized
  */
-void queue_init(queue_t * queue);
+void queue_init(queue_t *queue);
 
 /**
  * @brief Remove and return the item at the front of the queue
@@ -29,7 +29,7 @@ void queue_init(queue_t * queue);
  * @param queue 
  * @return node_t* that was removed || NULL if queue is empty
  */
-node_t *dequeue(queue_t * queue);
+node_t *dequeue(queue_t *queue);
 
 /**
  * @brief Add item to the back of the queue
@@ -37,7 +37,7 @@ node_t *dequeue(queue_t * queue);
  * @param queue 
  * @param item 
  */
-void enqueue(queue_t * queue, tcb_t* tcb);
+void enqueue(queue_t *queue, void *tcb);
 
 /**
  * @brief Determine if the queue is empty.

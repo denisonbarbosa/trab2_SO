@@ -1,0 +1,25 @@
+{
+    "command": "bash",
+    "tasks": [
+        {
+            "label": "Make Example",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-C",
+                "${fileDirname}"
+            ],
+            "dependsOn": "Make Library"
+        },
+        {
+            "label": "Make Library",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-C",
+                "${workspaceFolder}/lib"
+            ]
+        }
+    ],
+    "version": "2.0.0"
+}

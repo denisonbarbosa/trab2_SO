@@ -1,5 +1,6 @@
 #include <queue.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
   This   file    contains   a    function   definitions    for   queue
@@ -26,7 +27,7 @@ node_t *dequeue(queue_t *queue)
     return node;
 }
 
-void enqueue(queue_t *queue, tcb_t *tcb)
+void enqueue(queue_t *queue, void *tcb)
 {
     node_t *tmp = (node_t*)malloc(sizeof(node_t));
     tmp->next = NULL;

@@ -70,7 +70,7 @@ void unblock(lock_t *l)
 
     if (tmp != NULL)
     {
-        tmp->content->status = READY;
+        ((tcb_t*)tmp->content)->status = READY;
         enqueue(getreadyqueue(), tmp->content);
     }
 }

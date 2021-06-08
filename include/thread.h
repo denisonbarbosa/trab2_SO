@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <threadu.h>
+#include <queue.h>
 
 #define NUMBER_OF_REGISTERS 15
 #define STACK_SIZE 2048
@@ -17,7 +18,7 @@ typedef enum
 
 typedef struct tcb
 {
-    uint64_t regs[NUMBER_OF_REGISTERS];
+    uint64_t* regs;
     status_t status;
     uint64_t rflags;
     void *stack;
@@ -31,7 +32,7 @@ typedef struct tcb
  * 
  * @param tcb Pointer to a tcb_t
  */
-void init_tcb(tcb_t *tcb);
+void init_tcb(tcb_t **tcb);
 
 /**
  * @brief Returns the pointer to the current running thread
