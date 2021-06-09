@@ -83,9 +83,9 @@ void thread_exit(int status)
 // TODO: scheduler()
 void scheduler()
 {
-    printf("Thread %d got into scheduler\n", current_running->tid);
+    printf("SCHEDULAR\n");
     current_running = ((tcb_t *)dequeue(&ready_queue)->content);
-    return;
+    //return;
 }
 
 // TODO: exit_handler()
