@@ -18,13 +18,13 @@ typedef enum
 
 typedef struct tcb
 {
-    uint64_t* regs;
-    status_t status;
+    uint64_t regs[15]; // [0..14] -> 
     uint64_t rflags;
     void *stack;
     int tid;
     int current_exec_time;
     int retval;
+    status_t status;
 } tcb_t;
 
 /**

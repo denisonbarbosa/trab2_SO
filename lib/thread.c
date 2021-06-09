@@ -26,7 +26,6 @@ void init_tcb(tcb_t **tcb)
 {
     *tcb = (tcb_t *)malloc(sizeof(tcb_t));
     (*tcb)->tid = tid_global++;
-    (*tcb)->regs = malloc(NUMBER_OF_REGISTERS * sizeof(uint64_t));
     (*tcb)->stack = malloc(STACK_SIZE);
     (*tcb)->current_exec_time = 0;
 }
@@ -37,6 +36,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 
     ((tcb_t *)thread->tcb)->stack = start_routine;
     ((tcb_t *)thread->tcb)->regs[5] = *(uint64_t *)arg;
+    ((tcb_t *)thread->tcb)->regs[7] = (uint64_t) &((tcb_t *)thread->tcb)->stack;
 
     node_t *new_node = (node_t *)malloc(sizeof(node_t));
     new_node->content = thread->tcb;
@@ -82,7 +82,7 @@ void thread_exit(int status)
 // TODO: scheduler()
 void scheduler()
 {
-    current_running = dequeue(&ready_queue)->content;
+    current_running = ((tcb_t *)dequeue(&ready_queue)->content);
 }
 
 // TODO: exit_handler()
