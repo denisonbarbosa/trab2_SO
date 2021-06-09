@@ -32,7 +32,7 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
     init_tcb((tcb_t **)(&thread->tcb));
 
-    ((tcb_t *)thread->tcb)->stack = (u_int64_t) start_routine;
+    ((tcb_t *)thread->tcb)->stack = (uint64_t) start_routine;
     ((tcb_t *)thread->tcb)->regs[5] = (uint64_t) arg;
     ((tcb_t *)thread->tcb)->status = READY;
 
@@ -84,7 +84,9 @@ void thread_exit(int status)
 // TODO: scheduler()
 void scheduler()
 {
+    printf("SCHEDULAR\n");
     current_running = ((tcb_t *)dequeue(&ready_queue)->content);
+    //return;
 }
 
 // TODO: exit_handler()

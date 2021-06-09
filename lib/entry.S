@@ -43,7 +43,8 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	pushq %rcx
 	pushq %rbx
 	pushq %rax
-	
+
+	movq scratch, %rsp
 	# changing to the next thread
 	call scheduler
 
