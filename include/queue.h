@@ -79,4 +79,6 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  */
 void enqueue_sort(queue_t *q, node_t *item, node_lte comp);
 
+void print_queue(queue_t *q);
+
 #endif /* QUEUE_H */

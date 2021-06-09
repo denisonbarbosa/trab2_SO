@@ -10,15 +10,12 @@ int tid_global = 0;
 
 int thread_init()
 {
-    if (current_running != NULL)
-        return -EINVAL;
+    init_tcb(&current_running);
 
-    tcb_t *main_tcb = (tcb_t *)malloc(sizeof(tcb_t));
-    init_tcb(&main_tcb);
+    printf("main tid: %d\n", current_running->tid);
 
     queue_init(&ready_queue);
-
-    current_running = main_tcb;
+    
     return 0;
 }
 
@@ -28,33 +25,38 @@ void init_tcb(tcb_t **tcb)
     (*tcb)->tid = tid_global++;
     (*tcb)->stack = malloc(STACK_SIZE);
     (*tcb)->current_exec_time = 0;
+    (*tcb)->retval = 0;
 }
 
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
     init_tcb((tcb_t **)(&thread->tcb));
 
-    ((tcb_t *)thread->tcb)->stack = start_routine;
-    ((tcb_t *)thread->tcb)->regs[5] = *(uint64_t *)arg;
-    ((tcb_t *)thread->tcb)->regs[7] = (uint64_t) &((tcb_t *)thread->tcb)->stack;
+    ((tcb_t *)thread->tcb)->stack = (u_int64_t) start_routine;
+    ((tcb_t *)thread->tcb)->regs[5] = (uint64_t) arg;
+    ((tcb_t *)thread->tcb)->status = READY;
 
-    node_t *new_node = (node_t *)malloc(sizeof(node_t));
-    new_node->content = thread->tcb;
-    
     enqueue(&ready_queue, thread->tcb);
-
+    
+    print_queue(&ready_queue);
     return 0;
 }
 
 // TODO: thread_yield()
 int thread_yield()
 {
+    printf("Thread %d has beginning yielding \n", ((tcb_t*)current_running)->tid);
+
     enqueue(&ready_queue, current_running);
-    //printf("first thread in queue id: %d\n", ((tcb_t*)ready_queue.front->content)->tid);
-    //pega a primeira thread que está na fila e faz current running apontar para esta thread
-    //chama o escalonador para pegar a thread que está no início da fila de thread prontas e coloca para executar
-    //escalonador -> pega a fila de thread prontas(ready queue)
+
+    print_queue(&ready_queue);
+
     scheduler_entry();
+
+    printf("Thread %d has entered the fray \n", ((tcb_t*)current_running)->tid);
+
+    print_queue(&ready_queue);
+
     //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
     return 0;
 }

@@ -18,6 +18,7 @@ void queue_init(queue_t *queue)
 
 node_t *dequeue(queue_t *queue)
 {
+    printf("opa salve \n");
     node_t *node = NULL;
     if (is_empty(queue) == 0)
     {
@@ -76,4 +77,14 @@ void enqueue_sort(queue_t *q, node_t *item, node_lte comp)
         }
         q->front = front;
     }
+}
+
+void print_queue(queue_t *queue)
+{
+    printf("Queue Order = ");
+    for (node_t* node = queue->front; node != NULL; node = node->next)
+    {
+        printf("%d ", ((tcb_t*)node->content)->tid);
+    }
+    printf("\n");
 }

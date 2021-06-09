@@ -18,9 +18,13 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 
 	# preserving content of %rsp
 	movq %rsp, scratch
+	leaq current_running, %rsp
 	
 	# storing current_running flag address on %rsp
-	leaq (current_running, $128, 1), %rsp
+	leaq 136(%rsp), %rsp # rsp = current + ($136 * 1)
+	
+	# storing stack content
+	pushq scratch
 	
 	# emplacing registers on the respective addresses
 	pushfq
@@ -32,7 +36,6 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	pushq %r10
 	pushq %r9
 	pushq %r8
-	pushq scratch
 	pushq %rbp
 	pushq %rdi
 	pushq %rsi
@@ -45,7 +48,7 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	call scheduler
 
 	# loading context
-	leaq (current_running), %rsp
+	leaq current_running, %rsp
 	
 	popq %rax
 	popq %rbx
@@ -54,7 +57,6 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	popq %rsi
 	popq %rdi
 	popq %rbp
-	popq scratch
 	popq %r8
 	popq %r9
 	popq %r10
@@ -64,6 +66,8 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	popq %r14
 	popq %r15
 
-	movq scratch, %rsp
-	ret
+	popfq
 
+	popq %rsp
+
+	ret
