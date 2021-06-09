@@ -49,7 +49,6 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 // TODO: thread_yield()
 int thread_yield()
 {
-    //printf("current thread id: %d\n", current_running->tid);
     enqueue(&ready_queue, current_running);
     //printf("first thread in queue id: %d\n", ((tcb_t*)ready_queue.front->content)->tid);
     //pega a primeira thread que está na fila e faz current running apontar para esta thread

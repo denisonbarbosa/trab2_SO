@@ -3,6 +3,7 @@ scratch: .quad	0
 	
 	.text
 	.globl	scheduler_entry
+	.type scheduler_entry, %function
 	
 # TODO: This function executes the following steps:
 # 1. saves the context of the running thread

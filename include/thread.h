@@ -52,7 +52,7 @@ void* getreadyqueue();
  * @brief Selects the next thread to execute 
  * 
  */
-void scheduler_entry();
+extern void scheduler_entry();
 
 /**
  * @brief This function must be called if a thread does not call thread_exit()
