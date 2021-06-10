@@ -13,7 +13,7 @@ void *f1(void *p)
 		printf("f1 will sleep! %d\n", *one);
 		sleep(1);
 		printf("f1 will yield!\n");
-		thread_yield();
+		thread_yield();	
 	}
 	thread_exit(*one);
 }

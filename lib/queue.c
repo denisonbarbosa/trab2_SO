@@ -18,7 +18,6 @@ void queue_init(queue_t *queue)
 
 node_t *dequeue(queue_t *queue)
 {
-    printf("opa salve \n");
     node_t *node = NULL;
     if (is_empty(queue) == 0)
     {

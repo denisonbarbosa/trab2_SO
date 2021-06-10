@@ -13,7 +13,7 @@ int thread_init()
     init_tcb(&current_running);
 
     queue_init(&ready_queue);
-    
+
     return 0;
 }
 
@@ -21,7 +21,8 @@ void init_tcb(tcb_t **tcb)
 {
     *tcb = (tcb_t *)malloc(sizeof(tcb_t));
     (*tcb)->tid = tid_global++;
-    (*tcb)->stack = malloc(STACK_SIZE);
+    (*tcb)->stack = (uint64_t*) malloc(STACK_SIZE);
+    (*tcb)->stack = (*tcb)->stack + ((STACK_SIZE/sizeof(uint64_t))-1);
     (*tcb)->current_exec_time = 0;
     (*tcb)->retval = 0;
 }
@@ -29,35 +30,28 @@ void init_tcb(tcb_t **tcb)
 int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 {
     init_tcb((tcb_t **)(&thread->tcb));
-
-    ((tcb_t *)thread->tcb)->stack = (uint64_t) start_routine;
-    ((tcb_t *)thread->tcb)->regs[5] = (uint64_t) arg;
+    
+    // order: exit_handler -> start_routine -> rsp (return address)
+    ((tcb_t *)thread->tcb)->regs[5] = arg;
+    ((tcb_t *)thread->tcb)->regs[6] = ((tcb_t *)thread->tcb)->stack;
+    
+    *((tcb_t *)thread->tcb)->stack = (uint64_t*)exit_handler;
+    ((tcb_t *)thread->tcb)->stack--;
+    *((tcb_t *)thread->tcb)->stack = (uint64_t*)start_routine;
+    
     ((tcb_t *)thread->tcb)->status = READY;
 
     enqueue(&ready_queue, thread->tcb);
-    
-    print_queue(&ready_queue);
+
     return 0;
 }
 
 // TODO: thread_yield()
 int thread_yield()
 {
-    printf("Thread %d has beginning yielding \n", ((tcb_t*)current_running)->tid);
 
     enqueue(&ready_queue, current_running);
-
-    print_queue(&ready_queue);
-
-    printf("Calling scheduler_entry...\n");
     scheduler_entry();
-
-    printf("Thread %d has entered the fray \n", ((tcb_t*)current_running)->tid);
-
-    print_queue(&ready_queue);
-
-    //liberar CPU, chama a função em assembly (scheduler_entry(troca de contexto))
-    return 0;
 }
 
 // TODO: thread_join()
@@ -67,9 +61,6 @@ int thread_join(thread_t *thread, int *retval)
         thread_yield();
 
     *retval = ((tcb_t *)thread->tcb)->retval;
-    //Pegar a thread que foi passada por parâmetro e verificar o status dela, se for EXITED, retorna
-    //Se não for, tem que esperar a thread terminar, fazedo um yield da thread que chamou a thread join
-    //desaloca memória
     return 0;
 }
 
@@ -83,7 +74,7 @@ void thread_exit(int status)
 // TODO: scheduler()
 void scheduler()
 {
-    printf("SCHEDULAR\n");
+    // printf("SCHEDULAR\n");
     current_running = ((tcb_t *)dequeue(&ready_queue)->content);
     //return;
 }

@@ -5,28 +5,23 @@ scratch: .quad	0
 	.globl	scheduler_entry
 	.type scheduler_entry, %function
 	
-# TODO: This function executes the following steps:
-# 1. saves the context of the running thread
-# 2. calls the scheduler to select the thread to be executed
-# 	call scheduler
-# 3. restores the context of the selected thread
-# movq %rax, %rbx == %rbx = %rax
-	# pushq %rax = armazena o valor de rax no topo da pilha
-	# popq (reg ou mem) 
-	# leaq 
-scheduler_entry: # rsp aponta para a pilha da thread que está executando
+scheduler_entry:
+	
+	# pointer values: 
+	# regs[0..14] = current_running .. current_running + 112
+	# rflags      = current_running + 120
+	# stack       = current_running + 128
 
-	# preserving content of %rsp
+	# preserving content of %rsp || It has the return address to go to after the scheduler_entry call
 	movq %rsp, scratch
-	leaq current_running, %rsp
 	
 	# storing current_running flag address on %rsp
-	leaq 136(%rsp), %rsp # rsp = current + ($136 * 1)
-	
-	# storing stack content
+	movq current_running, %rsp
+	leaq 136(%rsp), %rsp
+
 	pushq scratch
 	
-	# emplacing registers on the respective addresses
+	# saving context
 	pushfq
 	pushq %r15
 	pushq %r14
@@ -44,13 +39,16 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	pushq %rbx
 	pushq %rax
 
+	# restoring the original content of %rsp
 	movq scratch, %rsp
+
 	# changing to the next thread
 	call scheduler
-
-	# loading context
-	leaq current_running, %rsp
 	
+	# storing current_running address on %rsp
+	movq current_running, %rsp
+	
+	# loading context
 	popq %rax
 	popq %rbx
 	popq %rcx
@@ -66,9 +64,8 @@ scheduler_entry: # rsp aponta para a pilha da thread que está executando
 	popq %r13
 	popq %r14
 	popq %r15
-
 	popfq
-
 	popq %rsp
-
+	# %rsp -> stack
+	
 	ret

@@ -20,12 +20,14 @@ typedef struct tcb
 {
     uint64_t regs[15]; // [0..14] -> 
     uint64_t rflags;
-    void *stack;
+    uint64_t *stack;
     int tid;
     int current_exec_time;
     int retval;
     status_t status;
 } tcb_t;
+
+// tcb_t - 0[reg0]8[reg1]16[reg2]24[reg3]32[reg4]40...[reg14]120[]128
 
 /**
  * @brief Initializes the tcb and allocates necessary memory
@@ -33,6 +35,13 @@ typedef struct tcb
  * @param tcb Pointer to a tcb_t
  */
 void init_tcb(tcb_t **tcb);
+
+/**
+ * @brief Allocates memory for the tcb->stack
+ * 
+ * @param stack 
+ */
+void stack_allocate(void **stack);
 
 /**
  * @brief Returns the pointer to the current running thread
