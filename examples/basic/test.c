@@ -24,7 +24,6 @@ int main()
 	int params[6], rv[6], i;
 
 	thread_init();
-	set_fair_schedular(TRUE);
 	printf("BEGIN: Time stamp: %ld\n", get_timer());
 	for (i = 0; i < 6; i++)
 	{

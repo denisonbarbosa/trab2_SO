@@ -52,6 +52,4 @@ int thread_init();
  */
 void thread_exit(int status);
 
-void set_fair_schedular(bool_t fair);
-
 #endif /* THREADU_H */

@@ -9,9 +9,11 @@
   extra-point functionality.
  */
 
+bool_t sorted_queuing = TRUE;
+
 void queue_init(queue_t *queue)
 {
-    queue = (queue_t *) malloc(sizeof(queue_t));
+    queue = (queue_t *)malloc(sizeof(queue_t));
     queue->front = NULL;
     queue->back = NULL;
 }
@@ -27,9 +29,29 @@ node_t *dequeue(queue_t *queue)
     return node;
 }
 
+int is_empty(queue_t *queue)
+{
+    if (queue->front == NULL)
+        return 1;
+    return 0;
+}
+
+node_t *peek(queue_t *queue)
+{
+    return queue->front;
+}
+
 void enqueue(queue_t *queue, void *tcb)
 {
-    node_t *tmp = (node_t*)malloc(sizeof(node_t));
+    if (sorted_queuing)
+        enqueue_sort(queue, tcb, comp_node_time);
+    else
+        enqueue_default(queue, tcb);
+}
+
+void enqueue_default(queue_t *queue, void *tcb)
+{
+    node_t *tmp = (node_t *)malloc(sizeof(node_t));
     tmp->next = NULL;
     tmp->content = tcb;
     if (is_empty(queue))
@@ -43,25 +65,13 @@ void enqueue(queue_t *queue, void *tcb)
     }
 }
 
-int is_empty(queue_t *queue)
-{
-    if (queue->front == NULL)
-        return 1;
-    return 0;
-}
-
-node_t *peek(queue_t *queue)
-{
-    return queue->front;
-}
-
 void enqueue_sort(queue_t *q, void *item, node_lte comp)
 {
-    node_t *node_item = (node_t*)malloc(sizeof(node_t));
+    node_t *node_item = (node_t *)malloc(sizeof(node_t));
     node_item->content = item;
     // node_t *front = node_item; // item turns front
     node_t *aux;
-    
+
     if (is_empty(q))
     {
         q->back = q->front = node_item;
@@ -72,18 +82,15 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
         aux = q->front;
         if (comp(node_item, aux) == 1)
         {
-            printf("Entrando no começo da fila\n");
             node_item->next = q->front;
             q->front = node_item;
         }
         else
         {
-            printf("Começando a percorrer a fila\n");
             while (comp(node_item, aux->next) == 0)
             {
-                printf("tid_aux: %d \ntid_next: %d\n", ((tcb_t*)aux->content)->tid, ((tcb_t*)aux->next->content)->tid);
                 aux = aux->next;
-                if (aux->next== NULL)
+                if (aux->next == NULL)
                     break;
             }
             node_item->next = aux->next;
@@ -108,9 +115,17 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
 void print_queue(queue_t *queue)
 {
     printf("Queue Order = ");
-    for (node_t* node = queue->front; node != NULL; node = node->next)
+    for (node_t *node = queue->front; node != NULL; node = node->next)
     {
-        printf("%d ", ((tcb_t*)node->content)->tid);
+        printf("%d ", ((tcb_t *)node->content)->tid);
     }
     printf("\n");
+}
+
+int comp_node_time(node_t *a, node_t *b)
+{
+    if (((tcb_t *)a->content)->current_exec_time <= ((tcb_t *)b->content)->current_exec_time)
+        return 1;
+
+    return 0;
 }

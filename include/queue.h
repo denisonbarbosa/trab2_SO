@@ -32,14 +32,6 @@ void queue_init(queue_t *queue);
 node_t *dequeue(queue_t *queue);
 
 /**
- * @brief Add item to the back of the queue
- * 
- * @param queue 
- * @param item 
- */
-void enqueue(queue_t *queue, void *tcb);
-
-/**
  * @brief Determine if the queue is empty.
  * 
  * @param queue 
@@ -54,6 +46,22 @@ int is_empty(queue_t *queue);
  * @return node_t* of the item || NULL if queue is empty
  */
 node_t *peek(queue_t *queue);
+
+/**
+ * @brief Enqueue the tcb using the correct method
+ * 
+ * @param queue 
+ * @param item 
+ */
+void enqueue(queue_t *queue, void *tcb);
+
+/**
+ * @brief Standard queuing method: Adds at the end of the queue
+ * 
+ * @param queue 
+ * @param tcb 
+ */
+void enqueue_default(queue_t *queue, void *tcb);
 
 /**
  * @brief A comparison function
@@ -78,6 +86,15 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  * @param comp Comparison function
  */
 void enqueue_sort(queue_t *q, void *item, node_lte comp);
+
+/**
+ * @brief Compares the current_exec_time of the given nodes
+ * 
+ * @param a 
+ * @param b 
+ * @return int 1 if a is less-than-or-equal-to b || 0 otherwise.
+ */
+int comp_node_time(node_t *a, node_t *b);
 
 void print_queue(queue_t *q);
 
