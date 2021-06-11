@@ -25,8 +25,9 @@ void init_tcb(tcb_t **tcb)
 {
     *tcb = (tcb_t *)malloc(sizeof(tcb_t));
     (*tcb)->tid = tid_global++;
-    (*tcb)->stack = (uint64_t *)malloc(STACK_SIZE);
-    (*tcb)->stack = (*tcb)->stack + ((STACK_SIZE / sizeof(uint64_t)) - 1);
+    (*tcb)->stack_address = (uint64_t *)malloc(STACK_SIZE);
+    (*tcb)->stack = (*tcb)->stack_address + ((STACK_SIZE / sizeof(uint64_t)) - 1);
+    //printf("%d -> %u\n", (*tcb)->tid, (*tcb)->stack);
     (*tcb)->current_exec_time = 0;
     (*tcb)->retval = 0;
 }
@@ -56,8 +57,8 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 int thread_yield()
 {
     current_running->current_exec_time += get_timer() - entry_time;
-    printf("thread %u \ncurrent_exec_time: %u\nentry_time: %u\n\n",
-        current_running->tid, current_running->current_exec_time, entry_time);
+    //printf("thread %u \ncurrent_exec_time: %u\nentry_time: %u\n\n",
+    //    current_running->tid, current_running->current_exec_time, entry_time);
     
     enqueue(&ready_queue, current_running);
     
@@ -67,12 +68,10 @@ int thread_yield()
 int thread_join(thread_t *thread, int *retval)
 {
     while (((tcb_t *)thread->tcb)->status != EXITED)
-    {   
-        sleep(1);
         thread_yield();
-    }
+
     *retval = ((tcb_t *)thread->tcb)->retval;
-    free_thread(thread);
+    //free_thread(thread);
     return 0;
 }
 
@@ -101,9 +100,12 @@ void exit_handler()
 
 void free_thread(thread_t *t)
 {
-    free(((tcb_t *)t->tcb)->stack);
+    void* stack_pointer = (uint32_t*)((tcb_t *)t->tcb)->regs[6];
+    stack_pointer -= STACK_SIZE-8;
+    //printf("thread %d\nstack_pointer: %u\nstack: %u\nbsp: %u\n\n", 
+    //    ((tcb_t*)t->tcb)->tid, ((tcb_t *)t->tcb)->stack,((tcb_t *)t->tcb)->regs[6]);
+    free(((tcb_t*)t->tcb)->stack_address);
     free(t->tcb);
-    //free(t);
 }
 
 tcb_t *getcurrt()

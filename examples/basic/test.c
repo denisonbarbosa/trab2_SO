@@ -11,7 +11,7 @@ void *f1(void *p)
 	for (i = 0; i < 3; i++)
 	{
 		printf("f1 will sleep! %d\n", *one);
-		sleep(1);
+		//sleep(1);
 		printf("f1 will yield!\n");
 		thread_yield();	
 	}

@@ -9,7 +9,7 @@
   extra-point functionality.
  */
 
-bool_t sorted_queuing = TRUE;
+bool_t sorted_queuing = FALSE;
 
 void queue_init(queue_t *queue)
 {

@@ -25,6 +25,7 @@ typedef struct tcb
     uint64_t current_exec_time;
     int retval;
     status_t status;
+    uint64_t *stack_address;
 } tcb_t;
 
 // tcb_t - 0[reg0]8[reg1]16[reg2]24[reg3]32[reg4]40...[reg14]120[]128
