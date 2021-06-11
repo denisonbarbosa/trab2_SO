@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <thread.h>
 #include <util.h>
+#include <stdio.h>
 
 queue_t ready_queue;
 tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
@@ -14,6 +15,8 @@ int thread_init()
     init_tcb(&current_running);
 
     queue_init(&ready_queue);
+
+    entry_time = get_timer();
 
     return 0;
 }
@@ -53,19 +56,21 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 int thread_yield()
 {
     current_running->current_exec_time += get_timer() - entry_time;
+    printf("thread %u \ncurrent_exec_time: %u\nentry_time: %u\n\n",
+        current_running->tid, current_running->current_exec_time, entry_time);
     
     enqueue(&ready_queue, current_running);
     
     scheduler_entry();
-    
-    entry_time = get_timer();
 }
 
 int thread_join(thread_t *thread, int *retval)
 {
     while (((tcb_t *)thread->tcb)->status != EXITED)
+    {   
+        sleep(1);
         thread_yield();
-
+    }
     *retval = ((tcb_t *)thread->tcb)->retval;
     free_thread(thread);
     return 0;
@@ -81,6 +86,7 @@ void thread_exit(int status)
 void scheduler()
 {
     current_running = ((tcb_t *)dequeue(&ready_queue)->content);
+    entry_time = get_timer();
 }
 
 // TODO: exit_handler()
@@ -97,7 +103,7 @@ void free_thread(thread_t *t)
 {
     free(((tcb_t *)t->tcb)->stack);
     free(t->tcb);
-    free(t);
+    //free(t);
 }
 
 tcb_t *getcurrt()

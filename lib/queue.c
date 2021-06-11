@@ -91,7 +91,10 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
             {
                 aux = aux->next;
                 if (aux->next == NULL)
+                {
+                    q->back = node_item;
                     break;
+                }
             }
             node_item->next = aux->next;
             aux->next = node_item;

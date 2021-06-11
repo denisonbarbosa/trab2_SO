@@ -22,7 +22,7 @@ typedef struct tcb
     uint64_t rflags;
     uint64_t *stack;
     int tid;
-    int current_exec_time;
+    uint64_t current_exec_time;
     int retval;
     status_t status;
 } tcb_t;
