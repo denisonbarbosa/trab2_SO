@@ -55,26 +55,53 @@ node_t *peek(queue_t *queue)
     return queue->front;
 }
 
-void enqueue_sort(queue_t *q, node_t *item, node_lte comp)
+void enqueue_sort(queue_t *q, void *item, node_lte comp)
 {
-    node_t *front = item; // item turns front
+    node_t *node_item = (node_t*)malloc(sizeof(node_t));
+    node_item->content = item;
+    // node_t *front = node_item; // item turns front
     node_t *aux;
+    
     if (is_empty(q))
     {
-        q->back = q->front = item;
+        q->back = q->front = node_item;
     }
     else
     {
-        item->next = q->front;
-        // continues if item > item->next and has next
-        while (comp(item, item->next) == 0 && item->next != NULL)
+        //node_item->next = q->front;
+        aux = q->front;
+        if (comp(node_item, aux) == 1)
         {
+            printf("Entrando no começo da fila\n");
+            node_item->next = q->front;
+            q->front = node_item;
+        }
+        else
+        {
+            printf("Começando a percorrer a fila\n");
+            while (comp(node_item, aux->next) == 0)
+            {
+                printf("tid_aux: %d \ntid_next: %d\n", ((tcb_t*)aux->content)->tid, ((tcb_t*)aux->next->content)->tid);
+                aux = aux->next;
+                if (aux->next== NULL)
+                    break;
+            }
+            node_item->next = aux->next;
+            aux->next = node_item;
+        }
+        /*
+        // continues if item > item->next and has next
+        while (comp(node_item, node_item->next) == 0 && node_item->next != NULL)
+        {
+            
+            
             front = q->front; // "restore" front
-            aux = item->next;
-            item->next = item->next->next;
-            aux->next = item;
+            aux = node_item->next;
+            node_item->next = node_item->next->next;
+            aux->next = node_item;
         }
         q->front = front;
+        */
     }
 }
 

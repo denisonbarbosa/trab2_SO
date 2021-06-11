@@ -69,4 +69,6 @@ extern void scheduler_entry();
  */
 void exit_handler();
 
+void free_thread(thread_t* t);
+
 #endif /* THREAD_H */

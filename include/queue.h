@@ -77,7 +77,7 @@ typedef int (*node_lte)(node_t *a, node_t *b);
  * @param item Item to be inserted
  * @param comp Comparison function
  */
-void enqueue_sort(queue_t *q, node_t *item, node_lte comp);
+void enqueue_sort(queue_t *q, void *item, node_lte comp);
 
 void print_queue(queue_t *q);
 
