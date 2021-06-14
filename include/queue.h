@@ -16,6 +16,14 @@ typedef struct queue
     node_t *back;
 } queue_t;
 
+
+/**
+ * @brief Set the fair scheduling variable
+ * 
+ * @param status Set to TRUE to enable fair scheduling | FALSE to disable
+ */
+void set_fair_scheduling(bool_t status);
+
 /**
  * @brief Initializes a queue pointer
  * 

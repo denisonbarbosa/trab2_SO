@@ -9,11 +9,12 @@
   extra-point functionality.
  */
 
-/**
- * @brief Set to TRUE to enable fair scheduling | FALSE to disable
- * 
- */
-bool_t sorted_queuing = FALSE;
+bool_t sorted_queuing = TRUE;
+
+void set_fair_scheduling(bool_t status)
+{
+    sorted_queuing = status;
+}
 
 void queue_init(queue_t *queue)
 {
@@ -116,6 +117,9 @@ void print_queue(queue_t *queue)
 
 int comp_node_time(node_t *a, node_t *b)
 {
+    if (b == NULL)
+        return 1;
+
     if (((tcb_t *)a->content)->current_exec_time <= ((tcb_t *)b->content)->current_exec_time)
         return 1;
 
