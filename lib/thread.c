@@ -69,8 +69,8 @@ int thread_join(thread_t *thread, int *retval)
     while (((tcb_t *)thread->tcb)->status != EXITED)
         thread_yield();
 
-    //if (retval != NULL)
-    *retval = ((tcb_t *)thread->tcb)->retval;
+    if (retval != NULL)
+        *retval = ((tcb_t *)thread->tcb)->retval;
     
     free_thread(thread);
     return 0;

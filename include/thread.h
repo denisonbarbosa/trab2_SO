@@ -18,7 +18,7 @@ typedef enum
 
 typedef struct tcb
 {
-    uint64_t regs[15]; // [0..14] -> 
+    uint64_t regs[15];
     uint64_t rflags;
     uint64_t *stack;
     int tid;
@@ -27,8 +27,6 @@ typedef struct tcb
     status_t status;
     uint64_t *stack_address;
 } tcb_t;
-
-// tcb_t - 0[reg0]8[reg1]16[reg2]24[reg3]32[reg4]40...[reg14]120[]128
 
 /**
  * @brief Initializes the tcb and allocates necessary memory
@@ -65,11 +63,22 @@ void* getreadyqueue();
 extern void scheduler_entry();
 
 /**
+ * @brief Makes current_running point to the next thread of the queue
+ * 
+ */
+void scheduler();
+
+/**
  * @brief This function must be called if a thread does not call thread_exit()
  * 
  */
 void exit_handler();
 
+/**
+ * @brief Frees the memory allocated for the thread t
+ * 
+ * @param t 
+ */
 void free_thread(thread_t* t);
 
 #endif /* THREAD_H */
