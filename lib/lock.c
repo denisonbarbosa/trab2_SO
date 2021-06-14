@@ -4,10 +4,9 @@
 
 enum
 {
-    SPIN = TRUE,
+    SPIN = FALSE,
 };
 
-// TODO: lock_init()
 void lock_init(lock_t *l)
 {
     if (SPIN)
@@ -22,7 +21,6 @@ void lock_init(lock_t *l)
     }
 }
 
-// TODO: lock_acquire()
 void lock_acquire(lock_t *l)
 {
     if (SPIN)
@@ -35,14 +33,13 @@ void lock_acquire(lock_t *l)
     {
         while (l->status == LOCKED)
         {
-            enqueue(&l->thread_queue, getcurrt());
+            enqueue_default(&l->thread_queue, getcurrt());
             block();
         }
         l->status = LOCKED;
     }
 }
 
-// TODO: lock_release()
 void lock_release(lock_t *l)
 {
     if (SPIN)
@@ -56,14 +53,12 @@ void lock_release(lock_t *l)
     }
 }
 
-// TODO: blocks the running thread
 void block()
 {
     getcurrt()->status = BLOCKED;
     scheduler_entry();
 }
 
-// TODO: unblocks  a thread that is waiting on a lock.
 void unblock(lock_t *l)
 {
     node_t *tmp = dequeue(&l->thread_queue);

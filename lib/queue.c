@@ -9,7 +9,11 @@
   extra-point functionality.
  */
 
-bool_t sorted_queuing = TRUE;
+/**
+ * @brief Set to TRUE to enable fair scheduling | FALSE to disable
+ * 
+ */
+bool_t sorted_queuing = FALSE;
 
 void queue_init(queue_t *queue)
 {
@@ -69,7 +73,6 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
 {
     node_t *node_item = (node_t *)malloc(sizeof(node_t));
     node_item->content = item;
-    // node_t *front = node_item; // item turns front
     node_t *aux;
 
     if (is_empty(q))
@@ -78,7 +81,6 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
     }
     else
     {
-        //node_item->next = q->front;
         aux = q->front;
         if (comp(node_item, aux) == 1)
         {
@@ -99,19 +101,6 @@ void enqueue_sort(queue_t *q, void *item, node_lte comp)
             node_item->next = aux->next;
             aux->next = node_item;
         }
-        /*
-        // continues if item > item->next and has next
-        while (comp(node_item, node_item->next) == 0 && node_item->next != NULL)
-        {
-            
-            
-            front = q->front; // "restore" front
-            aux = node_item->next;
-            node_item->next = node_item->next->next;
-            aux->next = node_item;
-        }
-        q->front = front;
-        */
     }
 }
 

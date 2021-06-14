@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 queue_t ready_queue;
-tcb_t *current_running; // sempre aponta para a thread que está rodando no momento
+tcb_t *current_running;
 uint64_t entry_time = 0;
 
 int tid_global = 0;
@@ -25,9 +25,8 @@ void init_tcb(tcb_t **tcb)
 {
     *tcb = (tcb_t *)malloc(sizeof(tcb_t));
     (*tcb)->tid = tid_global++;
-    (*tcb)->stack_address = (uint64_t *)malloc(STACK_SIZE);
-    (*tcb)->stack = (*tcb)->stack_address + ((STACK_SIZE / sizeof(uint64_t)) - 1);
-    //printf("%d -> %u\n", (*tcb)->tid, (*tcb)->stack);
+    (*tcb)->stack_address = (uint64_t *)malloc(STACK_SIZE * sizeof(uint64_t));
+    (*tcb)->stack = (*tcb)->stack_address + (STACK_SIZE - 1);
     (*tcb)->current_exec_time = 0;
     (*tcb)->retval = 0;
 }
@@ -57,12 +56,12 @@ int thread_create(thread_t *thread, void *(*start_routine)(void *), void *arg)
 int thread_yield()
 {
     current_running->current_exec_time += get_timer() - entry_time;
-    //printf("thread %u \ncurrent_exec_time: %u\nentry_time: %u\n\n",
-    //    current_running->tid, current_running->current_exec_time, entry_time);
-    
+ 
     enqueue(&ready_queue, current_running);
     
     scheduler_entry();
+
+    return 0;
 }
 
 int thread_join(thread_t *thread, int *retval)
@@ -70,8 +69,9 @@ int thread_join(thread_t *thread, int *retval)
     while (((tcb_t *)thread->tcb)->status != EXITED)
         thread_yield();
 
-    if (retval)
-        *retval = ((tcb_t *)thread->tcb)->retval;
+    //if (retval != NULL)
+    *retval = ((tcb_t *)thread->tcb)->retval;
+    
     free_thread(thread);
     return 0;
 }
@@ -89,22 +89,14 @@ void scheduler()
     entry_time = get_timer();
 }
 
-// TODO: exit_handler()
 void exit_handler()
 {
     current_running->status = EXITED;
     scheduler_entry();
-    //convenções de chamada de função -> parâmetros (os 4 primeiros são passados em registradores)
-    //o primeiro registrador para passar parâmetro é o rdi
-    //quando start_routine for invocada, precisamos passar o argumento da thread_create para o rdi
 }
 
 void free_thread(thread_t *t)
 {
-    void* stack_pointer = (uint32_t*)((tcb_t *)t->tcb)->regs[6];
-    stack_pointer -= STACK_SIZE-8;
-    //printf("thread %d\nstack_pointer: %u\nstack: %u\nbsp: %u\n\n", 
-    //    ((tcb_t*)t->tcb)->tid, ((tcb_t *)t->tcb)->stack,((tcb_t *)t->tcb)->regs[6]);
     free(((tcb_t*)t->tcb)->stack_address);
     free(t->tcb);
 }
