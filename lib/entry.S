@@ -17,7 +17,7 @@ scheduler_entry:
 	
 	# storing current_running flag address on %rsp
 	movq current_running, %rsp
-	leaq 136(%rsp), %rsp
+	leaq (136)(%rsp), %rsp
 
 	pushq scratch
 	
