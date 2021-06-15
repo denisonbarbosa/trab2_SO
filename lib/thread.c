@@ -95,6 +95,11 @@ void exit_handler()
     scheduler_entry();
 }
 
+void set_fair_schedular(bool_t status)
+{
+    set_sorted_queuing(status, &ready_queue);
+}
+
 void free_thread(thread_t *t)
 {
     free(((tcb_t*)t->tcb)->stack_address);

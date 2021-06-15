@@ -9,10 +9,20 @@
   extra-point functionality.
  */
 
-bool_t sorted_queuing = TRUE;
+bool_t sorted_queuing = FALSE;
 
-void set_fair_scheduling(bool_t status)
+void set_sorted_queuing(bool_t status, queue_t *q)
 {
+    queue_t *sorted_q;
+    if (!sorted_queuing && status)
+    {
+        sorted_q = (queue_t*)malloc(sizeof(sorted_q));   
+        while (is_empty(q) == 0)
+            enqueue_sort(sorted_q, dequeue(q), comp_node_time);
+        
+        q = sorted_q;
+    }
+    
     sorted_queuing = status;
 }
 

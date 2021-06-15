@@ -22,7 +22,7 @@ typedef struct queue
  * 
  * @param status Set to TRUE to enable fair scheduling | FALSE to disable
  */
-void set_fair_scheduling(bool_t status);
+void set_sorted_queuing(bool_t status, queue_t *q);
 
 /**
  * @brief Initializes a queue pointer
