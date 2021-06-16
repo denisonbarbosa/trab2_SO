@@ -20,9 +20,13 @@ encontram-se nos headers (.h).
 O escalonador justo foi implementado e pode ser "ligado" através da função
 set_fair_scheduler(bool_t status), declarada em threadu.h e implementada em thread.c.
 
-O escalonamento padrão é o FCFS, mas caso queira utilizar o fair_scheduler, 
-invoque set_fair_scheduler(TRUE).
+O escalonamento padrão é o FCFS, mas caso queira utilizar o fair_scheduler invoque 
+set_fair_scheduler(TRUE).
+
 Para retornar para o FCFS, basta invocar set_fair_scheduler(FALSE).
+
+No diretório examples/, adicionamos uma seção (fair/) para o teste do escalonador justo. 
+Sua compilação e execução respeita a mesma regra dos demais testes.
 
 ########################################### OBSERVAÇÔES ###########################################
 
