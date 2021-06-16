@@ -36,13 +36,6 @@ typedef struct tcb
 void init_tcb(tcb_t **tcb);
 
 /**
- * @brief Allocates memory for the tcb->stack
- * 
- * @param stack 
- */
-void stack_allocate(void **stack);
-
-/**
  * @brief Returns the pointer to the current running thread
  * 
  * @return tcb_t* 

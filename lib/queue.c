@@ -18,7 +18,7 @@ void set_sorted_queuing(bool_t status, queue_t *q)
     {
         sorted_q = (queue_t*)malloc(sizeof(sorted_q));   
         while (is_empty(q) == 0)
-            enqueue_sorted(sorted_q, dequeue(q), comp_node_time);
+            enqueue_sorted(sorted_q, dequeue(q)->content, comp_node_time);
         
         q = sorted_q;
     }
