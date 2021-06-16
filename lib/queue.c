@@ -18,7 +18,7 @@ void set_sorted_queuing(bool_t status, queue_t *q)
     {
         sorted_q = (queue_t*)malloc(sizeof(sorted_q));   
         while (is_empty(q) == 0)
-            enqueue_sort(sorted_q, dequeue(q), comp_node_time);
+            enqueue_sorted(sorted_q, dequeue(q), comp_node_time);
         
         q = sorted_q;
     }
@@ -59,7 +59,7 @@ node_t *peek(queue_t *queue)
 void enqueue(queue_t *queue, void *tcb)
 {
     if (sorted_queuing)
-        enqueue_sort(queue, tcb, comp_node_time);
+        enqueue_sorted(queue, tcb, comp_node_time);
     else
         enqueue_default(queue, tcb);
 }
@@ -80,7 +80,7 @@ void enqueue_default(queue_t *queue, void *tcb)
     }
 }
 
-void enqueue_sort(queue_t *q, void *item, node_lte comp)
+void enqueue_sorted(queue_t *q, void *item, node_lte comp)
 {
     node_t *node_item = (node_t *)malloc(sizeof(node_t));
     node_item->content = item;
