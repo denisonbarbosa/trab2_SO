@@ -52,6 +52,11 @@ int thread_init();
  */
 void thread_exit(int status);
 
-void set_fair_schedular(bool_t status);
+/**
+ * @brief Changes the schedulling method
+ * 
+ * @param status True for fair schedulling || False for FCFS
+ */
+void set_fair_scheduler(bool_t status);
 
 #endif /* THREADU_H */
